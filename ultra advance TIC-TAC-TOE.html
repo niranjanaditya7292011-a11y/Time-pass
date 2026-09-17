@@ -1,0 +1,350 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultra Tic Tac Toe — Ultimate</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+ --bg:#050816;--panel:rgba(12,18,38,.88);--line:#27365c;--cyan:#22d3ee;
+ --pink:#f472b6;--violet:#8b5cf6;--green:#34d399;--yellow:#facc15;--text:#f8fafc;--muted:#94a3b8
+}
+body{min-height:100vh;font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--text);
+background:radial-gradient(circle at 10% 10%,#172554 0,transparent 28%),radial-gradient(circle at 90% 20%,#3b0764 0,transparent 25%),linear-gradient(135deg,#030712,#090d1f 55%,#13051e);overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.28;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:32px 32px}
+button,input,select{font:inherit}button{cursor:pointer}
+.hidden{display:none!important}.page{min-height:100vh;position:relative;z-index:1}
+.center{display:grid;place-items:center;padding:30px}
+.welcome{width:min(1050px,94vw);text-align:center}
+.logo-wrap{width:min(620px,86vw);margin:auto;cursor:pointer;filter:drop-shadow(0 25px 45px rgba(34,211,238,.16));transition:.25s}
+.logo-wrap:hover{transform:translateY(-6px) scale(1.015)}
+.logo-wrap svg{width:100%;height:auto;display:block}
+.welcome h2{font-size:clamp(20px,4vw,34px);margin:14px 0 8px}
+.welcome p{color:var(--muted);font-size:15px}.tap{margin-top:20px;color:#67e8f9;font-weight:800;letter-spacing:1px;animation:blink 1.5s infinite}
+@keyframes blink{50%{opacity:.45}}
+.shell{width:min(1200px,94vw);margin:auto;padding:24px 0 40px}
+.nav{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:18px}
+.brand{font-weight:950;font-size:22px;color:#67e8f9;cursor:pointer}.nav-right{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:1px solid transparent;border-radius:12px;padding:11px 15px;color:white;font-weight:800;background:#1e293b;transition:.18s}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.08)}
+.blue{background:linear-gradient(135deg,#0891b2,#2563eb)}.purple{background:linear-gradient(135deg,#7c3aed,#db2777)}
+.green{background:linear-gradient(135deg,#059669,#22c55e)}.gray{background:#1e293b}.red{background:#b91c1c}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:0 18px 55px rgba(0,0,0,.28);backdrop-filter:blur(14px)}
+.title{font-size:clamp(26px,5vw,44px);margin-bottom:8px}.sub{color:var(--muted);margin-bottom:22px}
+.form{width:min(520px,100%);margin:auto}.field{margin-bottom:13px}.field label{display:block;font-size:13px;color:#cbd5e1;margin-bottom:6px}
+input,select{width:100%;padding:13px 14px;border-radius:12px;border:1px solid #334155;background:#07101f;color:white;outline:none}
+input:focus,select:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,.1)}
+.actions{display:flex;gap:9px;flex-wrap:wrap}.actions .btn{flex:1;min-width:130px}
+.profile-card{text-align:center}.avatar{width:92px;height:92px;border-radius:28px;margin:0 auto 13px;display:grid;place-items:center;font-size:38px;font-weight:950;background:linear-gradient(135deg,#22d3ee,#8b5cf6,#f472b6);box-shadow:0 12px 35px rgba(139,92,246,.3)}
+.profile-name{font-size:25px;font-weight:900}.id-chip{display:inline-block;margin-top:5px;color:#67e8f9;background:#061426;border:1px solid #164e63;padding:6px 10px;border-radius:999px;font-size:12px}
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.mode-card{padding:20px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,rgba(15,23,42,.92),rgba(9,15,32,.85));cursor:pointer;transition:.2s}
+.mode-card:hover{transform:translateY(-4px);border-color:#22d3ee}.mode-icon{font-size:36px}.mode-card h3{margin:10px 0 6px}.mode-card p{color:var(--muted);font-size:13px;line-height:1.5}
+.settings{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}.hint{font-size:12px;color:var(--muted);margin-top:6px}
+.online-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.online-box{border:1px solid var(--line);border-radius:18px;padding:20px;background:#07101f}
+.room-code{font-size:30px;font-weight:950;letter-spacing:5px;color:#67e8f9;margin:10px 0}.copy{margin-left:6px}
+.lobby{display:grid;grid-template-columns:280px 1fr;gap:16px}.slots{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.slot{padding:18px;border-radius:18px;border:1px solid var(--line);background:#07101f;min-height:135px}.slot.me{border-color:#22d3ee}.slot.empty{opacity:.65;border-style:dashed}.slot .mini-avatar{width:45px;height:45px;border-radius:14px;display:grid;place-items:center;font-weight:900;background:linear-gradient(135deg,#22d3ee,#8b5cf6);margin-bottom:9px}.slot b{display:block}.slot small{color:var(--muted)}
+.game-layout{display:grid;grid-template-columns:270px 1fr 270px;gap:16px}.topbar{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:15px}.info{background:#07101f;border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}.info small{display:block;color:var(--muted)}.info strong{font-size:17px}
+.board{width:min(570px,82vw);aspect-ratio:1;margin:0 auto;display:grid;gap:8px}.board.s3{grid-template-columns:repeat(3,1fr)}.board.s4{grid-template-columns:repeat(4,1fr)}
+.cell{border:1px solid #334155;border-radius:14px;background:linear-gradient(145deg,#172033,#080f1e);color:white;font-size:clamp(28px,7vw,68px);font-weight:950;transition:.15s}.cell:hover{border-color:#22d3ee;transform:scale(1.02)}.cell.x{color:#22d3ee}.cell.o{color:#f472b6}.cell.a{color:#a78bfa}.cell.b{color:#facc15}.cell.c{color:#34d399}.cell.win{background:#14532d;border-color:#34d399;animation:pulse .55s infinite alternate}@keyframes pulse{to{transform:scale(1.045)}}
+.players{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:14px}.player{padding:10px;border:1px solid var(--line);border-radius:12px;background:#07101f}.player.active{border-color:#22d3ee;box-shadow:0 0 15px rgba(34,211,238,.1)}.symbol{font-size:21px;font-weight:950}
+.scoreboard{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:14px}.score{background:#07101f;border:1px solid var(--line);padding:9px;border-radius:10px;text-align:center}.score b{display:block;font-size:19px;margin-top:3px}
+.list{display:grid;gap:8px}.friend{display:flex;align-items:center;justify-content:space-between;padding:10px;border:1px solid var(--line);border-radius:12px;background:#07101f}.online-dot{width:8px;height:8px;background:#34d399;border-radius:50%;display:inline-block;margin-right:6px}
+.section-gap{margin-top:16px}.muted{color:var(--muted);font-size:13px;line-height:1.6}.toast{position:fixed;z-index:100;left:50%;bottom:22px;transform:translate(-50%,120px);opacity:0;background:#111827;border:1px solid #22d3ee;padding:12px 18px;border-radius:12px;transition:.25s;max-width:90vw;text-align:center}.toast.show{transform:translate(-50%,0);opacity:1}
+@media(max-width:900px){.game-layout,.lobby,.online-grid{grid-template-columns:1fr}.scoreboard{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.settings{grid-template-columns:1fr}.nav{align-items:flex-start}.scoreboard{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<section id="welcomePage" class="page center">
+  <div class="welcome">
+    <div class="logo-wrap" id="startLogo" title="Click to start">
+      <svg viewBox="0 0 900 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ultra Tic Tac Toe">
+        <defs>
+          <linearGradient id="g" x1="0" x2="1"><stop stop-color="#22d3ee"/><stop offset=".52" stop-color="#8b5cf6"/><stop offset="1" stop-color="#f472b6"/></linearGradient>
+          <filter id="glow"><feGaussianBlur stdDeviation="9" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <rect x="20" y="20" width="860" height="500" rx="46" fill="#07101f" stroke="url(#g)" stroke-width="5"/>
+        <circle cx="130" cy="110" r="70" fill="#22d3ee" opacity=".12"/><circle cx="760" cy="420" r="90" fill="#f472b6" opacity=".1"/>
+        <g transform="translate(105 120)" stroke="url(#g)" stroke-width="12" stroke-linecap="round" fill="none" filter="url(#glow)">
+          <path d="M0 85h190M0 155h190M60 15v210M130 15v210"/>
+          <path d="M25 40l140 150M165 40L25 190"/>
+        </g>
+        <g transform="translate(545 120)" stroke="url(#g)" stroke-width="12" stroke-linecap="round" fill="none" filter="url(#glow)">
+          <circle cx="95" cy="125" r="80"/>
+          <path d="M0 85h190M0 155h190M60 15v220M130 15v220" opacity=".65"/>
+        </g>
+        <text x="450" y="355" text-anchor="middle" fill="white" font-size="58" font-weight="900" font-family="Arial">ULTRA TIC TAC TOE</text>
+        <text x="450" y="402" text-anchor="middle" fill="#67e8f9" font-size="24" font-weight="700" font-family="Arial">PLAY • CREATE • INVITE • WIN</text>
+      </svg>
+    </div>
+    <h2>Welcome to the Ultimate Arena 🎮</h2>
+    <p>Build your profile first, then choose your game mode.</p>
+    <div class="tap">CLICK THE TIC TAC TOE IMAGE TO START</div>
+  </div>
+</section>
+
+<section id="profilePage" class="page hidden">
+<div class="shell"><div class="nav"><div class="brand" onclick="go('welcomePage')">⚡ ULTRA TTT</div></div>
+<div class="card form">
+  <div class="profile-card">
+    <div class="avatar" id="profileAvatar">?</div>
+    <h1 class="title">Create Your Player Profile</h1>
+    <p class="sub">Your profile appears in local games, rooms and opponent slots.</p>
+  </div>
+  <div class="field"><label>Player Name</label><input id="nameInput" maxlength="18" placeholder="Enter your name"></div>
+  <div class="field"><label>Player ID</label><input id="idInput" maxlength="20" placeholder="Choose a unique Player ID"></div>
+  <div class="actions"><button class="btn blue" id="saveProfile">💾 Save Profile & Continue</button></div>
+</div></div>
+</section>
+
+<section id="modePage" class="page hidden">
+<div class="shell"><div class="nav"><div class="brand">⚡ ULTRA TTT</div><div class="nav-right"><button class="btn gray" onclick="go('profilePage')">👤 Profile</button><button class="btn gray" onclick="go('friendsPage')">👬 Friends</button></div></div>
+<div class="card"><h1 class="title">Choose Game Mode</h1><p class="sub">Select a mode. Every mode opens on its own game screen.</p>
+<div class="modes">
+<div class="mode-card" data-mode="2"><div class="mode-icon">👥</div><h3>2 Players</h3><p>Two local players, X vs O.</p></div>
+<div class="mode-card" data-mode="3"><div class="mode-icon">👥</div><h3>3 Players</h3><p>X vs O vs A.</p></div>
+<div class="mode-card" data-mode="4"><div class="mode-icon">👥</div><h3>4 Players</h3><p>X vs O vs A vs B.</p></div>
+<div class="mode-card" data-mode="5"><div class="mode-icon">👥</div><h3>5 Players</h3><p>X vs O vs A vs B vs C.</p></div>
+<div class="mode-card" data-mode="computer"><div class="mode-icon">🤖</div><h3>Computer vs Player</h3><p>Play X against the computer.</p></div>
+<div class="mode-card" data-mode="online"><div class="mode-icon">🌐</div><h3>Online Room</h3><p>Create or join a room and play with friends or any player who has the room details.</p></div>
+</div>
+<div class="settings"><div class="field"><label>Board Size</label><select id="modeSize"><option value="3">3 × 3</option><option value="4">4 × 4</option></select></div><div class="card" style="padding:14px"><b>Online room tip</b><div class="hint">Create generates a Room ID automatically. Give the Room ID + password to another player.</div></div></div>
+</div></div>
+</section>
+
+<section id="onlinePage" class="page hidden">
+<div class="shell"><div class="nav"><div class="brand" onclick="go('modePage')">← Game Modes</div></div>
+<div class="card"><h1 class="title">🌐 Online Room</h1><p class="sub">Create a private room or join an existing room.</p>
+<div class="online-grid">
+<div class="online-box"><h2>➕ Create Room</h2><p class="muted">No Room ID needs to be typed here. A new Room ID is generated automatically.</p><div class="field section-gap"><label>Room Password</label><input id="createPassword" type="password" maxlength="24" placeholder="Create room password"></div><div class="field"><label>Players</label><select id="roomPlayers"><option value="2">2 Players</option><option value="3">3 Players</option><option value="4">4 Players</option><option value="5">5 Players</option></select></div><div class="field"><label>Board</label><select id="roomSize"><option value="3">3 × 3</option><option value="4">4 × 4</option></select></div><button class="btn green" id="createRoom">Create New Room</button><div id="createdBox" class="hidden section-gap"><div class="muted">Your Room ID</div><div class="room-code" id="createdCode">----</div><button class="btn blue" id="copyRoom">📋 Copy Room ID</button></div></div>
+<div class="online-box"><h2>🚪 Join Room</h2><p class="muted">Enter the Room ID shared by the host and the room password.</p><div class="field section-gap"><label>Room ID</label><input id="joinId" maxlength="10" placeholder="Room ID"></div><div class="field"><label>Room Password</label><input id="joinPassword" type="password" maxlength="24" placeholder="Room password"></div><button class="btn blue" id="joinRoom">Join Room</button></div>
+</div>
+<div class="section-gap"><button class="btn gray" onclick="go('friendsPage')">👬 Open Friend System</button></div>
+</div></div>
+</section>
+
+<section id="lobbyPage" class="page hidden">
+<div class="shell"><div class="nav"><div class="brand">🏠 ROOM LOBBY</div><div class="nav-right"><button class="btn gray" id="copyLobbyCode">📋 Room ID</button><button class="btn red" id="leaveRoom">Leave</button></div></div>
+<div class="lobby"><div class="card"><h2>My Profile</h2><div class="profile section-gap"><div class="avatar" id="lobbyAvatar">?</div><div><b id="lobbyName">Player</b><div class="muted" id="lobbyId">@id</div></div></div><div class="muted section-gap">Room ID</div><div class="room-code" id="lobbyCode">----</div><div class="muted">Share this ID and the room password with your opponent.</div><div class="field section-gap"><label>Board</label><select id="lobbySize"><option value="3">3 × 3</option><option value="4">4 × 4</option></select></div><button class="btn green" id="startOnline">Start Game</button></div>
+<div class="card"><h2>Opponents</h2><p class="sub">Each connected player appears here with their profile.</p><div id="lobbySlots" class="slots"></div><div class="section-gap muted" id="lobbyStatus">Waiting for players…</div></div></div>
+</div>
+</section>
+
+<section id="friendsPage" class="page hidden">
+<div class="shell"><div class="nav"><div class="brand" onclick="go('modePage')">← Game Modes</div></div>
+<div class="card"><h1 class="title">👬 Friend System</h1><p class="sub">Add a Player ID and keep a quick local friend list. Invite a friend by sharing your current room details.</p>
+<div class="online-grid"><div class="online-box"><h2>Add Friend</h2><div class="field section-gap"><input id="friendId" placeholder="Friend Player ID" maxlength="20"></div><button class="btn blue" id="addFriend">➕ Add Friend</button></div><div class="online-box"><h2>Your Friends</h2><div id="friendsList" class="list section-gap"></div></div></div>
+</div></div>
+</section>
+
+<section id="gamePage" class="page hidden">
+<div class="shell"><div class="nav"><div class="brand" onclick="go('modePage')">← Modes</div><div class="nav-right"><button class="btn gray" id="newGame">🔄 New Game</button><button class="btn gray" onclick="go('friendsPage')">👬 Friends</button></div></div>
+<div class="game-layout">
+<aside class="card"><h2>👤 Profile</h2><div class="profile section-gap"><div class="avatar" id="gameAvatar">?</div><div><b id="gameName">Player</b><div class="muted" id="gameId">@id</div></div></div><div class="section-gap"><button class="btn blue" style="width:100%" id="backMode">🎮 Change Mode</button></div></aside>
+<main class="card" style="text-align:center"><div class="topbar"><div class="info"><small>MODE</small><strong id="modeText">2 Players</strong></div><div class="info"><small>TURN</small><strong id="turnText">X</strong></div><div class="info"><small>STATUS</small><strong id="status">Ready</strong></div></div><div id="board" class="board s3"></div><div id="players" class="players"></div><div id="scoreboard" class="scoreboard"></div></main>
+<aside class="card"><h2>🎯 Match Info</h2><div class="muted section-gap" id="matchInfo">Local match</div><div class="section-gap"><h3>How to Play</h3><p class="muted">Fill a complete row, column or diagonal. On 3×3 you need 3 matching symbols; on 4×4 you need 4.</p></div><div class="section-gap" id="onlineGameActions"></div></aside>
+</div></div>
+</section>
+
+<div id="toast" class="toast"></div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getDatabase,ref,set,get,update,remove,onValue} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import {getAuth,signInAnonymously} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+/* Firebase config */
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyA35VjQ_Lj3PTPT9jeYULnrWiObg18LE48",
+  authDomain: "aditya-game-84c89.firebaseapp.com",
+  databaseURL: "https://aditya-game-84c89-default-rtdb.firebaseio.com",
+  projectId: "aditya-game-84c89",
+  storageBucket: "aditya-game-84c89.firebasestorage.app",
+  messagingSenderId: "307300568301",
+  appId: "1:307300568301:web:f23bc7a946018eb3dad0e4",
+  measurementId: "G-NXXCSHN0H4"
+};
+
+let db=null,auth=null,user=null,firebaseReady=false,stopRoomListener=null;
+try{
+ const app=initializeApp(firebaseConfig); db=getDatabase(app); auth=getAuth(app);
+ signInAnonymously(auth).then(r=>{user=r.user;firebaseReady=true;}).catch(e=>console.warn("Firebase auth:",e));
+}catch(e){console.warn("Firebase init:",e)}
+
+const $=id=>document.getElementById(id);
+const symbols=["X","O","A","B","C"];
+const names=["X","O","A","B","C"];
+let profile=JSON.parse(localStorage.getItem("ttt_profile")||"null");
+let mode="2",size=3,board=[],turn=0,active=true,winnerCells=[],scores={X:0,O:0,A:0,B:0,C:0};
+let roomId="",roomPassword="",myIndex=0,roomMax=2,roomPlayers=[];
+
+function go(id){
+ document.querySelectorAll(".page").forEach(x=>x.classList.add("hidden"));
+ $(id).classList.remove("hidden"); window.scrollTo(0,0);
+}
+function toast(m){const e=$("toast");e.textContent=m;e.classList.add("show");clearTimeout(window.tt);window.tt=setTimeout(()=>e.classList.remove("show"),2600)}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+function avatarLetter(){return (profile?.name||profile?.id||"?").charAt(0).toUpperCase()}
+function updateProfileUI(){
+ if(!profile)return;
+ ["profileAvatar","lobbyAvatar","gameAvatar"].forEach(id=>$(id)&&($(id).textContent=avatarLetter()));
+ ["lobbyName","gameName"].forEach(id=>$(id)&&($(id).textContent=profile.name));
+ ["lobbyId","gameId"].forEach(id=>$(id)&&($(id).textContent="@"+profile.id));
+}
+function requireProfile(){if(!profile){go("profilePage");return false}return true}
+
+$("startLogo").onclick=()=>{go("profilePage");if(profile){$("nameInput").value=profile.name;$("idInput").value=profile.id}};
+
+$("saveProfile").onclick=async()=>{
+ const name=$("nameInput").value.trim(),id=$("idInput").value.trim();
+ if(!name||!id){toast("Please enter both Name and Player ID.");return}
+ profile={name,id};localStorage.setItem("ttt_profile",JSON.stringify(profile));updateProfileUI();
+ if(firebaseReady&&user){try{await set(ref(db,"players/"+user.uid),{playerId:id,name,online:true,updatedAt:Date.now()})}catch(e){console.warn(e)}}
+ toast("Profile saved!");go("modePage");
+};
+
+$("modeSize").onchange=()=>{size=Number($("modeSize").value)};
+document.querySelectorAll(".mode-card").forEach(card=>card.onclick=()=>{
+ if(!requireProfile())return;
+ mode=card.dataset.mode;
+ if(mode==="online"){go("onlinePage");return}
+ size=Number($("modeSize").value);startLocalGame();
+});
+$("backMode").onclick=()=>go("modePage");
+
+function startLocalGame(){go("gamePage");board=Array(size*size).fill("");turn=0;active=true;winnerCells=[];updateGameUI();renderBoard();updatePlayers();updateScores()}
+$("newGame").onclick=()=>{if(mode==="online"){if(roomId)startOnlineGame();else go("onlinePage")}else startLocalGame()};
+
+function updateGameUI(){
+ $("modeText").textContent=mode==="computer"?"Computer vs Player":mode==="online"?"Online Room":mode+" Players";
+ $("status").textContent=active?"Playing":"Finished";
+ $("turnText").textContent=symbols[turn];
+ $("matchInfo").textContent=mode==="online"?`Room ${roomId} • ${roomMax} Players`:`${size} × ${size} board`;
+ updateProfileUI();
+}
+function renderBoard(){
+ const el=$("board");el.className="board "+(size===3?"s3":"s4");el.innerHTML="";
+ board.forEach((v,i)=>{const b=document.createElement("button");b.className="cell";if(v){b.textContent=v;b.classList.add(v.toLowerCase())}if(winnerCells.includes(i))b.classList.add("win");b.onclick=()=>play(i);el.appendChild(b)})
+}
+function updatePlayers(){
+ const el=$("players");el.innerHTML="";
+ let count=mode==="computer"?2:(mode==="online"?Math.max(2,roomMax):Number(mode));
+ for(let i=0;i<count;i++){
+  const d=document.createElement("div");d.className="player"+(i===turn?" active":"");
+  let n=mode==="computer"&&i===1?"Computer 🤖":mode==="online"&&roomPlayers[i]?roomPlayers[i].name||roomPlayers[i].playerId:"Player "+(i+1);
+  d.innerHTML=`<div class="symbol">${symbols[i]}</div><div class="muted">${esc(n)}</div>`;
+  el.appendChild(d)
+ }
+}
+function updateScores(){
+ $("scoreboard").innerHTML=symbols.slice(0,mode==="computer"?2:(mode==="online"?roomMax:Number(mode))).map(s=>`<div class="score">${s}<b>${scores[s]}</b></div>`).join("")
+}
+function check(sym){
+ winnerCells=[];const need=size;
+ for(let r=0;r<size;r++)for(let c=0;c<=size-need;c++){let line=[];for(let k=0;k<need;k++)line.push(r*size+c+k);if(line.every(i=>board[i]===sym)){winnerCells=line;return true}}
+ for(let c=0;c<size;c++)for(let r=0;r<=size-need;r++){let line=[];for(let k=0;k<need;k++)line.push((r+k)*size+c);if(line.every(i=>board[i]===sym)){winnerCells=line;return true}}
+ for(let r=0;r<=size-need;r++)for(let c=0;c<=size-need;c++){let line=[];for(let k=0;k<need;k++)line.push((r+k)*size+(c+k));if(line.every(i=>board[i]===sym)){winnerCells=line;return true}}
+ for(let r=0;r<=size-need;r++)for(let c=need-1;c<size;c++){let line=[];for(let k=0;k<need;k++)line.push((r+k)*size+(c-k));if(line.every(i=>board[i]===sym)){winnerCells=line;return true}}
+ return false
+}
+function finish(sym){active=false;scores[sym]++;$("status").textContent=sym+" WINS!";renderBoard();updateScores();toast("🏆 "+sym+" wins!")}
+function draw(){active=false;$("status").textContent="DRAW";toast("🤝 Draw!");renderBoard()}
+async function play(i){
+ if(!active||board[i])return;
+ if(mode==="online"){if(myIndex!==turn){toast("Wait for your turn!");return}board[i]=symbols[turn];await syncRoom();return}
+ if(mode==="computer"){if(turn!==0)return;board[i]="X";renderBoard();if(check("X")){finish("X");return}if(!board.includes("")){draw();return}turn=1;updateGameUI();updatePlayers();setTimeout(computerMove,350);return}
+ board[i]=symbols[turn];renderBoard();if(check(symbols[turn])){finish(symbols[turn]);return}if(!board.includes("")){draw();return}turn=(turn+1)%Number(mode);updateGameUI();updatePlayers()
+}
+function computerMove(){
+ if(!active)return;const empty=board.map((v,i)=>v===""?i:-1).filter(i=>i>=0);if(!empty.length)return;
+ for(const i of empty){board[i]="O";if(check("O")){renderBoard();finish("O");return}board[i]=""}
+ for(const i of empty){board[i]="X";const ok=check("X");board[i]="";if(ok){board[i]="O";renderBoard();turn=0;updateGameUI();return}}
+ const center=Math.floor(board.length/2);board[center]===""?board[center]="O":board[empty[Math.floor(Math.random()*empty.length)]]="O";
+ renderBoard();if(check("O")){finish("O");return}if(!board.includes("")){draw();return}turn=0;updateGameUI();updatePlayers()
+}
+
+/* Online */
+function randomRoomId(){return "ROOM-"+Math.random().toString(36).slice(2,7).toUpperCase()}
+$("createRoom").onclick=async()=>{
+ if(!requireProfile())return;
+ const pw=$("createPassword").value.trim();if(!pw){toast("Enter a room password.");return}
+ if(!firebaseReady||!user){toast("Firebase is not connected. Enable Anonymous Authentication.");return}
+ roomId=randomRoomId();roomPassword=pw;roomMax=Number($("roomPlayers").value);size=Number($("roomSize").value);myIndex=0;mode="online";
+ try{
+  const roomRef=ref(db,"rooms/"+roomId),snap=await get(roomRef);if(snap.exists()){toast("Please try again.");return}
+  await set(roomRef,{password:pw,size,turn:0,active:false,maxPlayers:roomMax,host:user.uid,started:false,players:{[user.uid]:{name:profile.name,playerId:profile.id,symbol:"X",index:0}}});
+  $("createdCode").textContent=roomId;$("createdBox").classList.remove("hidden");showLobby();listenRoom();toast("Room created! Share the Room ID + password.");
+ }catch(e){console.error(e);toast("Could not create room. Check Firebase rules.")}
+};
+$("copyRoom").onclick=()=>navigator.clipboard?.writeText(roomId).then(()=>toast("Room ID copied!")).catch(()=>toast(roomId));
+$("copyLobbyCode").onclick=()=>navigator.clipboard?.writeText(roomId).then(()=>toast("Room ID copied!"));
+$("joinRoom").onclick=async()=>{
+ if(!requireProfile())return;
+ const id=$("joinId").value.trim().toUpperCase(),pw=$("joinPassword").value.trim();if(!id||!pw){toast("Enter Room ID and password.");return}
+ if(!firebaseReady||!user){toast("Firebase is not connected. Enable Anonymous Authentication.");return}
+ try{
+  const rr=ref(db,"rooms/"+id),snap=await get(rr);if(!snap.exists()){toast("Room not found.");return}
+  const room=snap.val();if(room.password!==pw){toast("Wrong room password.");return}
+  const entries=Object.entries(room.players||{});if(entries.length>=Number(room.maxPlayers||2)){toast("Room is full.");return}
+  const used=entries.map(([,p])=>Number(p.index));let idx=0;while(used.includes(idx))idx++;
+  await update(rr,{["players/"+user.uid]:{name:profile.name,playerId:profile.id,symbol:symbols[idx],index:idx}});
+  roomId=id;roomPassword=pw;roomMax=Number(room.maxPlayers||2);myIndex=idx;mode="online";size=Number(room.size||3);showLobby();listenRoom();toast("Joined room!");
+ }catch(e){console.error(e);toast("Could not join room. Check Firebase rules.")}
+};
+function showLobby(){
+ go("lobbyPage");$("lobbyCode").textContent=roomId;$("lobbyName").textContent=profile.name;$("lobbyId").textContent="@"+profile.id;updateProfileUI()
+}
+function listenRoom(){
+ if(stopRoomListener)stopRoomListener();if(!firebaseReady||!roomId)return;
+ stopRoomListener=onValue(ref(db,"rooms/"+roomId),snap=>{
+  if(!snap.exists()){toast("Room was closed.");go("onlinePage");return}
+  const d=snap.val();roomMax=Number(d.maxPlayers||2);size=Number(d.size||3);roomPlayers=Object.values(d.players||{}).sort((a,b)=>a.index-b.index);
+  renderLobby(d);if(d.started){board=d.board||Array(size*size).fill("");turn=Number(d.turn||0);active=d.active!==false;go("gamePage");updateGameUI();renderBoard();updatePlayers();updateScores()}
+ })
+}
+function renderLobby(d){
+ $("lobbyCode").textContent=roomId;$("lobbySize").value=String(size);
+ const slots=$("lobbySlots");slots.innerHTML="";
+ for(let i=0;i<roomMax;i++){
+  const p=roomPlayers[i],div=document.createElement("div");div.className="slot "+(p&&p.index===myIndex?"me":"")+(p?"":" empty");
+  div.innerHTML=p?`<div class="mini-avatar">${esc((p.name||p.playerId||"?").charAt(0).toUpperCase())}</div><b>${esc(p.name||p.playerId)}</b><small>@${esc(p.playerId||"") } • ${symbols[i]}</small>`:`<div class="mini-avatar">?</div><b>Waiting…</b><small>Opponent slot ${i+1}</small>`;
+  slots.appendChild(div)
+ }
+ $("lobbyStatus").textContent=roomPlayers.length>=roomMax?"All player slots are filled. Host can start the game.":`Waiting for opponents: ${roomPlayers.length}/${roomMax}`;
+ $("startOnline").disabled=!(user&&d.host===user.uid&&roomPlayers.length>=2)
+}
+$("lobbySize").onchange=async()=>{size=Number($("lobbySize").value);if(firebaseReady&&roomId&&user){await update(ref(db,"rooms/"+roomId),{size})}};
+$("startOnline").onclick=async()=>{
+ if(!firebaseReady||!roomId)return;const snap=await get(ref(db,"rooms/"+roomId));if(!snap.exists())return;const d=snap.val();if(d.host!==user.uid){toast("Only the room host can start.");return}if(Object.keys(d.players||{}).length<2){toast("Wait for at least one opponent.");return}
+ await update(ref(db,"rooms/"+roomId),{started:true,active:true,board:Array(size*size).fill(""),turn:0});
+};
+async function syncRoom(){
+ if(!firebaseReady||!roomId)return;
+ const sym=symbols[turn];
+ if(check(sym)){await update(ref(db,"rooms/"+roomId),{board,active:false,winner:sym});return}
+ if(!board.includes("")){await update(ref(db,"rooms/"+roomId),{board,active:false,winner:"DRAW"});return}
+ const count=Math.max(2,roomPlayers.length);await update(ref(db,"rooms/"+roomId),{board,turn:(turn+1)%count})
+}
+$("leaveRoom").onclick=async()=>{
+ if(firebaseReady&&user&&roomId){try{await remove(ref(db,"rooms/"+roomId+"/players/"+user.uid));const s=await get(ref(db,"rooms/"+roomId));if(s.exists()&&s.val().host===user.uid)await remove(ref(db,"rooms/"+roomId))}catch(e){}}
+ if(stopRoomListener){stopRoomListener();stopRoomListener=null}roomId="";roomPlayers=[];go("modePage");toast("Left room.")
+};
+
+/* Friends */
+function renderFriends(){
+ const box=$("friendsList"),arr=JSON.parse(localStorage.getItem("ttt_friends")||"[]");box.innerHTML="";
+ if(!arr.length){box.innerHTML='<div class="muted">No friends yet.</div>';return}
+ arr.forEach(id=>{const d=document.createElement("div");d.className="friend";d.innerHTML=`<span><span class="online-dot"></span>${esc(id)}</span><button class="btn blue">Invite</button>`;d.querySelector("button").onclick=()=>{if(!roomId)toast("Create or join a room first.");else toast("Share Room ID "+roomId+" and password with "+id)};box.appendChild(d)})
+}
+$("addFriend").onclick=()=>{const id=$("friendId").value.trim();if(!id){toast("Enter a Player ID.");return}if(!profile||id===profile.id){toast("You cannot add yourself.");return}let a=JSON.parse(localStorage.getItem("ttt_friends")||"[]");if(a.includes(id)){toast("Friend already added.");return}a.push(id);localStorage.setItem("ttt_friends",JSON.stringify(a));$("friendId").value="";renderFriends();toast("Friend added!")};
+
+renderFriends();
+if(profile){$("nameInput").value=profile.name;$("idInput").value=profile.id;updateProfileUI();go("modePage")}else go("welcomePage");
+</script>
+</body>
+</html>
